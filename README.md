@@ -1,31 +1,40 @@
-# Fluent::Plugin::Addinfo
+# fluent-plugin-addinfo
 
-TODO: Write a gem description
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'fluent-plugin-addinfo'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install fluent-plugin-addinfo
 
 ## Usage
 
-TODO: Write usage instructions here
+expample setting
 
-## Contributing
+```ruby:td-agent.conf
+<match nginx.access>
+  type addinfo
+  yaml /path_to/addinfo.yaml
+  field info_field
+  pattern [^ ]* ([^ ]*) .*
+  addkey info_field_add
+</match>
+```
 
-1. Fork it ( https://github.com/[my-github-username]/fluent-plugin-addinfo/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+```ruby:/path_to/addinfo.yaml
+aaa: 111
+bbb: 222
+ccc: 333
+```
+
+and use this plugin
+
+```
+{"info_field" : "GET aaa hogehoge"} to {"info_field" : "GET aaa hogehoge", "info_field_add":"111"}
+{"info_field" : "GET bbb hogehoge"} to {"info_field" : "GET bbb hogehoge", "info_field_add":"222"}
+{"info_field" : "GET ddd hogehoge"} to {"info_field" : "GET ddd hogehoge"}
+```
+
+
+this plugin rewirte tag to `#{tag}.addinfo`
+so example `nginx.access.addinfo`
+
+
+## Installation
+
+`gem install fluent-plugin-addinfo` or `fluent-gem install fluent-plugin-addinfo`
