@@ -36,7 +36,7 @@ class Fluent::AddInfoOutput < Fluent::Output
   end
 
   def emit(tag, es, chain)
-    emit_tag = Proc.new {|tag| "#{tag}.addinfo" }
+    emit_tag = "#{tag}.addinfo"
 
     es.each do |time,record|
       begin

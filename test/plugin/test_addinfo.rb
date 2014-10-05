@@ -72,7 +72,7 @@ class AddInfoOutputTest < Test::Unit::TestCase
       d.emit("path" => "aaa-aaa")
     end
     assert_equal [
-      {"path" => "aaa-aaa-aaa", "path2" => "aaa-aaa-aaa", "newkey"=>"111"},
+      {"path" => "aaa-aaa-aaa", "path2" => "aaa-aaa-aaa", "newkey" => "111"},
       {"aaa" => "aaa-aaa-aaa"},
       {"path" => "aaa-aaa"}
     ], d.records
