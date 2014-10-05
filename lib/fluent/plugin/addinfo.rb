@@ -4,6 +4,7 @@ class Fluent::AddInfoOutput < Fluent::Output
   config_param :yaml,    :string, :default => nil
   config_param :field,   :string, :default => nil
   config_param :pattern, :string, :default => nil
+  config_param :addkey,  :string, :default => "addkey"
 
   def initialize
     super
@@ -23,7 +24,7 @@ class Fluent::AddInfoOutput < Fluent::Output
       raise Fluent::ConfigError, e
     end
 
-    reqexp = Regexp.new(@pattern)
+    @reqexp = Regexp.new(@pattern)
   end
 
   def start
@@ -34,15 +35,18 @@ class Fluent::AddInfoOutput < Fluent::Output
     super
   end
 
-  def format(tag, time, record)
-    [tag, time, record].to_msgpack
-  end
+  def emit(tag, es, chain)
+    emit_tag = Proc.new {|tag| "#{tag}.addinfo" }
 
-  def write(chunk)
-    records = []
-    chunk.msgpack_each { |record|
-      # records << record
-    }
-    # write records
+    es.each do |time,record|
+      begin
+        info = record[@field].match(@reqexp)
+        record[@addkey] = @replacementMap[info[1]].to_s
+      rescue
+      end
+      Fluent::Engine.emit(emit_tag, time, record)
+    end
+
+    chain.next
   end
 end

@@ -9,6 +9,7 @@ class AddInfoOutputTest < Test::Unit::TestCase
     yaml test/hoge.yaml
     field path
     pattern [^-]*-[^-]*-(.*)
+    addkey newkey
   ]
 
   def create_driver(conf = CONFIG, tag='test')
@@ -59,31 +60,22 @@ class AddInfoOutputTest < Test::Unit::TestCase
     assert_equal 'test/hoge.yaml', d.instance.yaml
     assert_equal 'test_field', d.instance.field
     assert_equal 'test_pattern', d.instance.pattern
+    assert_equal 'addkey', d.instance.addkey
   end
 
-  def test_format
+  def test_emit
     d = create_driver
 
-    # time = Time.parse("2011-01-02 13:14:15 UTC").to_i
-    # d.emit({"a"=>1}, time)
-    # d.emit({"a"=>2}, time)
+    d.run do
+      d.emit({"path" => "aaa-aaa-aaa", "path2" => "aaa-aaa-aaa"})
+      d.emit("aaa" => "aaa-aaa-aaa")
+      d.emit("path" => "aaa-aaa")
+    end
+    assert_equal [
+      {"path" => "aaa-aaa-aaa", "path2" => "aaa-aaa-aaa", "newkey"=>"111"},
+      {"aaa" => "aaa-aaa-aaa"},
+      {"path" => "aaa-aaa"}
+    ], d.records
 
-    # d.expect_format %[2011-01-02T13:14:15Z\ttest\t{"a":1}\n]
-    # d.expect_format %[2011-01-02T13:14:15Z\ttest\t{"a":2}\n]
-
-    # d.run
-  end
-
-  def test_write
-    d = create_driver
-
-    # time = Time.parse("2011-01-02 13:14:15 UTC").to_i
-    # d.emit({"a"=>1}, time)
-    # d.emit({"a"=>2}, time)
-
-    # ### FileOutput#write returns path
-    # path = d.run
-    # expect_path = "#{TMP_DIR}/out_file_test._0.log.gz"
-    # assert_equal expect_path, path
   end
 end
