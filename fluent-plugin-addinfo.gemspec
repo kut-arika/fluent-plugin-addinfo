@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{add infomation from csv}
   spec.description   = %q{add infomation from csv}
   spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.license       = "APLv2"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
